@@ -2,17 +2,14 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-//const char* ssid = "INFINITUM055F";
-//const char* password = "0434776648";
-
 const char* ssid = "IZZI-MANCILLA";
 const char* password = "25014978";
 
+//char* ssid = "TELECABLE TRIPLE PLAY SJR";
+//char* password = "44478476";
+
 #define pushbutton1 D0
 #define pushbutton2 D1
-
-boolean lastbuttonstate1 = false;
-boolean lastbuttonstate2 = false;
 
 void setup()
 {
@@ -37,7 +34,6 @@ void setup()
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
   
-  //pinMode(ledpin,OUTPUT);
   pinMode(pushbutton1,INPUT);
   pinMode(pushbutton2,INPUT);
 
@@ -48,46 +44,97 @@ void setup()
 }
 
 void loop()
-{
-  String boton = "";
-  
-  if(digitalRead(pushbutton1)== HIGH && digitalRead(pushbutton2) == LOW && lastbuttonstate1 == false)
-   {
-
-    Serial.print("BOTON IZQUIERDO OPRIMIDO");
-    Serial.println(F(" \n "));
-    Serial.println(F("PETICION ENVIADA"));
-    Serial.println(F(" \n "));
-
-    post(boton);
-
-    //boton = "";
-    
-   }
-   
- else if(digitalRead(pushbutton1) == LOW && digitalRead(pushbutton2)== LOW && lastbuttonstate1 == HIGH)
-   {
-
-    Serial.print("BOTON DERECHO OPRIMIDO");
-    Serial.println(F(" \n "));
-    Serial.println(F("PETICION ENVIADA"));
-    Serial.println(F(" \n "));
-
-    post(boton);
-
-    //boton = "";
-    
-   }
+{        
+  boton_izquierdo();
+  boton_derecho();
 }
+  
+  String boton_izquierdo()
+  {
+    int estado = 0;
+    int salida = 0;
+    int estado_anterior = 0;
+    String lado = "IZQUIERDO";
+    
+    estado = digitalRead(pushbutton1);
+  
+    if((estado == HIGH) && (estado_anterior == LOW))
+    {
+      salida = 1 - salida;
+    }
+  
+    estado_anterior = estado;
+    delay(80);
+    
+    if(salida == 1)
+    {
+      //String lado = "BOTON IZQUIERDO OPRIMIDO";
+  
+      Serial.print(lado);
+      Serial.println(F(" \n "));
+      Serial.println(F("PETICION ENVIADA"));
+      Serial.println(F(" \n "));
 
-void post(String boton)
+      post(lado);
+
+      return lado;
+  
+      //lado = "";
+    }
+      
+    else
+      {
+        Serial.print("\n .");
+      }
+  }
+
+  String boton_derecho()
+  {
+    int estado2 = 0;
+    int salida2 = 0;
+    int estado_anterior2 = 0;
+    String lado = "DERECHO";
+    
+    estado2 = digitalRead(pushbutton2);
+  
+    if((estado2 == HIGH) && (estado_anterior2 == LOW))
+    {
+      salida2 = 1 - salida2;
+    }
+  
+    estado_anterior2 = estado2;
+    delay(80);
+    
+    if(salida2 == 1)
+    {
+      //String lado2 = "BOTON DERECHO OPRIMIDO";
+  
+      Serial.print(lado);
+      Serial.println(F(" \n "));
+      Serial.println(F("PETICION ENVIADA"));
+      Serial.println(F(" \n "));
+  
+      post(lado);
+
+      return lado;
+  
+      //lado = "";
+    }
+      
+    else
+      {
+        Serial.print("\n . ");
+      }
+  }
+
+void post(String lado)
 {
   HTTPClient http;
-  String json = "{}";
+  String json = "";
+  //String server = "http://192.168.0.100:3000/api/product/";
   String server = "http://192.168.0.4:3000/api/product/";
-  server.concat(boton);
+  server.concat(lado);
   
-
   StaticJsonBuffer<200> jsonBuffer;
   JsonObject& root = jsonBuffer.createObject();
   Serial.println(server);
@@ -100,4 +147,4 @@ void post(String boton)
   http.end();
   Serial.println("FIN MyPost");
   Serial.println("");
-}
+} 
