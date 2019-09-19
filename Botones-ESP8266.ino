@@ -2,11 +2,8 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-const char* ssid = "IZZI-MANCILLA";
-const char* password = "25014978";
-
-//char* ssid = "TELECABLE TRIPLE PLAY SJR";
-//char* password = "44478476";
+//char* ssid = "";
+//char* password = "";
 
 #define pushbutton1 D0
 #define pushbutton2 D1
@@ -36,11 +33,6 @@ void setup()
   
   pinMode(pushbutton1,INPUT);
   pinMode(pushbutton2,INPUT);
-
-  Serial.println(F("|-------------------------------------------------|"));
-  Serial.println(F("|          PROCESAMIENTO EN PARALELO P/L          |"));
-  Serial.println(F("|  API REST / Node.JS / MongoDB / nodeMCU / JSON  |"));
-  Serial.println(F("|-------------------------------------------------|"));
 }
 
 void loop()
@@ -67,9 +59,7 @@ void loop()
     delay(80);
     
     if(salida == 1)
-    {
-      //String lado = "BOTON IZQUIERDO OPRIMIDO";
-  
+    {  
       Serial.print(lado);
       Serial.println(F(" \n "));
       Serial.println(F("PETICION ENVIADA"));
@@ -78,8 +68,6 @@ void loop()
       post(lado);
 
       return lado;
-  
-      //lado = "";
     }
       
     else
@@ -106,9 +94,7 @@ void loop()
     delay(80);
     
     if(salida2 == 1)
-    {
-      //String lado2 = "BOTON DERECHO OPRIMIDO";
-  
+    {  
       Serial.print(lado);
       Serial.println(F(" \n "));
       Serial.println(F("PETICION ENVIADA"));
@@ -117,8 +103,6 @@ void loop()
       post(lado);
 
       return lado;
-  
-      //lado = "";
     }
       
     else
@@ -131,7 +115,6 @@ void post(String lado)
 {
   HTTPClient http;
   String json = "";
-  //String server = "http://192.168.0.100:3000/api/product/";
   String server = "http://192.168.0.4:3000/api/product/";
   server.concat(lado);
   
